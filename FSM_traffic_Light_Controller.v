@@ -1,28 +1,25 @@
 // This module implements a 4-state traffic light controller as a Moore FSM.
 module traffic_light_fsm (
-    input clk,          
-    input reset,        
-  output reg [2:0] light_out
+    input clk,
+    input reset,
+    output reg [2:0] light_out
 );
 
-    parameter S_MAIN_GREEN   = 2'b00; 
+    parameter S_MAIN_GREEN   = 2'b00;
     parameter S_MAIN_YELLOW  = 2'b01;
-    parameter S_CROSS_GREEN  = 2'b10; 
-    parameter S_CROSS_YELLOW = 2'b11; 
+    parameter S_CROSS_GREEN  = 2'b10;
+    parameter S_CROSS_YELLOW = 2'b11;
 
-    
     reg [1:0] current_state;
     reg [1:0] next_state;
 
-    
     reg [2:0] timer_count;
-    parameter GREEN_TIME  = 3'd4
+    parameter GREEN_TIME  = 3'd4;
     parameter YELLOW_TIME = 3'd2;
 
     wire timer_done;
     assign timer_done = (timer_count == 3'd0);
 
-    
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             current_state <= S_MAIN_GREEN;
@@ -32,7 +29,6 @@ module traffic_light_fsm (
         end
     end
 
-    
     always @(*) begin
         next_state = current_state;
         
@@ -58,12 +54,11 @@ module traffic_light_fsm (
                 end
             end
             default: begin
-                next_state = S_MAIN_GREEN; // Handle illegal states by resetting.
+                next_state = S_MAIN_GREEN;
             end
         endcase
     end
     
-//Timer Control Logic
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             timer_count <= GREEN_TIME;
@@ -82,19 +77,7 @@ module traffic_light_fsm (
 
     always @(*) begin
         case(current_state)
-            S_MAIN_GREEN:   light_out = 3'b001; 
-            S_MAIN_YELLOW:  light_out = 3'b010; 
-            S_CROSS_GREEN:  light_out = 3'b100;
-            S_CROSS_YELLOW: light_out = 3'b100;
-            default:        light_out = 3'b100; 
-        endcase
-    end
-endmodule
-
-
-
-
-
+            S_MAIN_GREEN:   light_out =
 //tb.v
 // Code your testbench here
 // or browse Examples
